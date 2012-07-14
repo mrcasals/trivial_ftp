@@ -50,7 +50,9 @@ int main(int argc, char *argv[])
 
    ********************************************************/
 
-  int param, verbose, show_help;
+  int param;
+  int verbose = 0;
+  int show_help = 0;
   int server_port = 69;
   int mode = 0;
   char *server_host, *target_file;
