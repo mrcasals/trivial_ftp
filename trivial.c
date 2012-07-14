@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
   }
   
   server.sin_family = AF_INET;
-  server.sin_port = htons(port); 
+  server.sin_port = htons(server_port); 
 
   server_host = gethostbyname(server_host_name);
 
