@@ -6,28 +6,35 @@
  * Descripció: Codi del client TFTP.                    *
  ********************************************************/
 
-#include <unistd.h> //per tipus com el socklen_t
-#include <netdb.h> //pel gethostbyname
-#include <errno.h> //per gestionar errors
-#include <sys/types.h> //per tipus com el uint
-#include <netinet/in.h> //pel INADDR_ANY
-#include <sys/socket.h> //per la creaci? de sockets
+#include "common.h"
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-
-#include <sys/wait.h>
-#include <sys/time.h>
-#include <sys/resource.h>
-
-#include <signal.h> 
+int showHelp() {
+  printf("/********************************************************\n\
+  \n\
+      trivial -f file -H host [-p port] {-r|-w} -v\n\
+  \n\
+      Compulsory params:\n\
+        -f: filename\n\
+        -H: server host\n\
+        -p: server port\n\
+        [-r, -w]: reads/writes to the server\n\
+  \n\
+      Optional params:\n\
+        -v: use verbose mode\n\
+  \n\
+      Help:\n\
+        -h: shows this info\n\
+  \n\
+  ********************************************************/");
+  fflush(stdout);
+  return 1;
+}
 
 int main(int argc, char *argv[])
 {
   /********************************************************
 
-      Param initialitzation and control.
+      Param initialitzation.
 
       Compulsory params:
         -f: filename
@@ -46,9 +53,6 @@ int main(int argc, char *argv[])
   int param, mode, verbose, show_help;
   int server_port = 69;
   char *server_host, *target_file;
-
-#define RFC1350_OP_RRQ 1
-#define RFC1350_OP_WRQ 2
 
   while( (param = getopt(argc, argv, "hvrwt:f:H:p:") ) != -1)
   {
@@ -99,31 +103,33 @@ int main(int argc, char *argv[])
     }
   }
 
+  /********************************************************
+
+      Param control
+
+   ********************************************************/
+
+  if( target_file == NULL ){
+    printf(NO_FILE_SET_ERR);
+    fflush(stdout);
+    show_help = 1;
+  }
+
+  if( server_host == NULL ){
+    printf(NO_HOST_SET_ERR);
+    fflush(stdout);
+    show_help = 1;
+  }
+
+  if( mode < 0 ) {
+    printf(TWO_MODES_SET_ERR);
+    fflush(stdout);
+    show_help = 1;
+  }
+
   if( show_help == 1 ) {
     showHelp();
   }
 
   return 0;
-}
-
-int showHelp() {
-  printf("/********************************************************\n\
-  \n\
-      trivial -f file -H host [-p port] {-r|-w} -v\n\
-  \n\
-      Compulsory params:\n\
-        -f: filename\n\
-        -H: server host\n\
-        -p: server port\n\
-        [-r, -w]: reads/writes to the server\n\
-  \n\
-      Optional params:\n\
-        -v: use verbose mode\n\
-  \n\
-      Help:\n\
-        -h: shows this info\n\
-  \n\
-  ********************************************************/");
-  fflush(stdout);
-  return 1;
 }

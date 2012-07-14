@@ -1,3 +1,4 @@
 trivial
 triviald
 *.o
+*.dSYM
