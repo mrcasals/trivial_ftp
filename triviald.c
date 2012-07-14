@@ -25,6 +25,15 @@ int showHelp() {
   return 1;
 }
 
+void removeZombieChildProcesses(int i) {
+    pid_t pid;
+
+    while( (pid = wait3(NULL, WNOHANG, NULL)) > 0 ) {
+        printf(CHLD_DELETED, pid);
+        fflush(stdout);
+    }
+}
+
 int main(int argc, char *argv[])
 {
   /********************************************************

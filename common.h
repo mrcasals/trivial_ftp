@@ -65,6 +65,9 @@
 #define SOCKET_CONSTRUCTION_ERR "There has been an error constructing the socket.\n"
 #define TWO_MODES_SET_ERR "Two modes have been set. Please, set only one mode.\n"
 
+/* ---------------- OTHERS ------------------- */
+#define CHLD_DELETED "Child %d was deleted.\n"
+
 #define u_int16_t unsigned short
 #define OPCODE(addr) (ntohs(* ((u_int16_t *) addr)))
 
