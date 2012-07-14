@@ -50,8 +50,9 @@ int main(int argc, char *argv[])
 
    ********************************************************/
 
-  int param, mode, verbose, show_help;
+  int param, verbose, show_help;
   int server_port = 69;
+  int mode = 0;
   char *server_host, *target_file;
 
   while( (param = getopt(argc, argv, "hvrwt:f:H:p:") ) != -1)
@@ -117,6 +118,12 @@ int main(int argc, char *argv[])
 
   if( server_host == NULL ){
     printf(NO_HOST_SET_ERR);
+    fflush(stdout);
+    show_help = 1;
+  }
+
+  if( mode == 0 ) {
+    printf(NO_MODE_SET_ERR);
     fflush(stdout);
     show_help = 1;
   }

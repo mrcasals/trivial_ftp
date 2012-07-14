@@ -59,9 +59,10 @@
 #define RFC1350_BLOCKSIZE  512  /* Max. data block size */
 
 /* ---------------- ERRORS ------------------- */
-#define NO_FILE_SET_ERR "No file name has been set."
-#define NO_HOST_SET_ERR "No host has been set."
-#define TWO_MODES_SET_ERR "Two modes have been set. Please, set only one mode."
+#define NO_FILE_SET_ERR "No file name has been set.\n"
+#define NO_HOST_SET_ERR "No host has been set.\n"
+#define NO_MODE_SET_ERR "No mode has been set.\n"
+#define TWO_MODES_SET_ERR "Two modes have been set. Please, set only one mode.\n"
 
 #define u_int16_t unsigned short
 #define OPCODE(addr) (ntohs(* ((u_int16_t *) addr)))
