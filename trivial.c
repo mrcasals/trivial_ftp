@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
   int param;
   int verbose = 0;
   int show_help = 0;
-  int server_port = 69;
+  int server_port = RFC1350_PORT;
   int mode = 0;
   char *server_host_name, *target_file;
 
