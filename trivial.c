@@ -16,10 +16,10 @@ int showHelp() {
       Compulsory params:\n\
         -f: filename\n\
         -H: server host\n\
-        -p: server port\n\
         [-r, -w]: reads/writes to the server\n\
   \n\
       Optional params:\n\
+        -p: server port. If not set, port will be 69\n\
         -v: use verbose mode\n\
   \n\
       Help:\n\
@@ -39,10 +39,10 @@ int main(int argc, char *argv[])
       Compulsory params:
         -f: filename
         -H: server host
-        -p: server port
         [-r, -w]: reads/writes to the server
 
       Optional params:
+        -p: server port. If not set, port will be 69
         -v: use verbose mode
 
       Help:
