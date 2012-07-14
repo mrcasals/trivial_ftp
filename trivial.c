@@ -167,9 +167,9 @@ int main(int argc, char *argv[])
     printf(SOCKET_CONSTRUCTION_ERR);
     return -1;
   }
-  
+
   server.sin_family = AF_INET;
-  server.sin_port = htons(server_port); 
+  server.sin_port = htons(server_port);
 
   server_host = gethostbyname(server_host_name);
 
