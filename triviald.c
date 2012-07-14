@@ -11,7 +11,7 @@
 int showHelp() {
   printf("/********************************************************\n\
   \n\
-      trivial [-p port] [-v]\n\
+      triviald [-p port] [-v]\n\
   \n\
       Optional params:\n\
         -p: port where to listen. If not set, port will be 69\n\
