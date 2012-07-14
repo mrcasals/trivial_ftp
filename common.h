@@ -62,6 +62,7 @@
 #define NO_FILE_SET_ERR "No file name has been set.\n"
 #define NO_HOST_SET_ERR "No host has been set.\n"
 #define NO_MODE_SET_ERR "No mode has been set.\n"
+#define SOCKET_CONSTRUCTION_ERR "There has been an error constructing the socket.\n"
 #define TWO_MODES_SET_ERR "Two modes have been set. Please, set only one mode.\n"
 
 #define u_int16_t unsigned short

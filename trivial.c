@@ -50,12 +50,20 @@ int main(int argc, char *argv[])
 
    ********************************************************/
 
+  /* --------- Params --------*/
   int param;
   int verbose = 0;
   int show_help = 0;
   int server_port = 69;
   int mode = 0;
-  char *server_host, *target_file;
+  char *server_host_name, *target_file;
+
+  /* --------- Sockets --------*/
+  struct sockaddr_in server;
+  struct sockaddr_in client;
+  struct hostent *server_host;
+  int client_socket;
+
 
   while( (param = getopt(argc, argv, "hvrwt:f:H:p:") ) != -1)
   {
@@ -65,7 +73,7 @@ int main(int argc, char *argv[])
       break;
 
     case 'H':
-      server_host = optarg;
+      server_host_name = optarg;
       break;
 
     case 'p':
@@ -118,7 +126,7 @@ int main(int argc, char *argv[])
     show_help = 1;
   }
 
-  if( server_host == NULL ){
+  if( server_host_name == NULL ){
     printf(NO_HOST_SET_ERR);
     fflush(stdout);
     show_help = 1;
@@ -138,7 +146,34 @@ int main(int argc, char *argv[])
 
   if( show_help == 1 ) {
     showHelp();
+    return -1;
   }
+
+  /********************************************************
+
+      Sockets initialization
+
+   ********************************************************/
+  client.sin_family = AF_INET;
+  client.sin_port = htons(0);
+  client.sin_addr.s_addr = INADDR_ANY;
+
+  client_socket = socket(PF_INET,SOCK_DGRAM,0);
+
+  bind(client_socket, (struct sockaddr*)&client, sizeof(client));
+
+  /* We check for socket errors */
+  if (client_socket == -1){
+    printf(SOCKET_CONSTRUCTION_ERR);
+    return -1;
+  }
+  
+  server.sin_family = AF_INET;
+  server.sin_port = htons(port); 
+
+  server_host = gethostbyname(server_host_name);
+
+  memcpy( (char *)&server.sin_addr, (char *)server_host->h_addr, server_host->h_length);
 
   return 0;
 }
