@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
   /* -------- Sockets --------*/
   struct sockaddr_in server;
   struct sockaddr_in client;
-  socklen_t clien_length;
+  socklen_t client_length;
   int server_socket;
 
   while( (param = getopt(argc, argv, "hvrwt:f:H:p:") ) != -1)
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 
   bind(server_socket, (struct sockaddr *)&server, sizeof(server));
 
-  client_legth = sizeof(struct sockaddr_in);
+  client_length = sizeof(struct sockaddr_in);
 
   /********************************************************
 
