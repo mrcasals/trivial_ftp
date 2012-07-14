@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
 
   if( show_help == 1 ) {
     showHelp();
+    return -1;
   }
 
   return 0;
