@@ -158,15 +158,15 @@ int main(int argc, char *argv[])
   client.sin_port = htons(0);
   client.sin_addr.s_addr = INADDR_ANY;
 
-  client_socket = socket(PF_INET,SOCK_DGRAM,0);
-
-  bind(client_socket, (struct sockaddr*)&client, sizeof(client));
+  client_socket = socket(PF_INET, SOCK_DGRAM, 0);
 
   /* We check for socket errors */
-  if (client_socket == -1){
+  if ( client_socket == -1 ) {
     printf(SOCKET_CONSTRUCTION_ERR);
     return -1;
   }
+
+  bind(client_socket, (struct sockaddr*)&client, sizeof(client));
 
   server.sin_family = AF_INET;
   server.sin_port = htons(server_port);

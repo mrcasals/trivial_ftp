@@ -40,10 +40,17 @@ int main(int argc, char *argv[])
 
    ********************************************************/
 
+  /* -------- Params --------*/
   int param;
   int verbose = 0;
   int show_help = 0;
   int server_port = RFC1350_PORT;
+
+  /* -------- Sockets --------*/
+  struct sockaddr_in server;
+  struct sockaddr_in client;
+  socklen_t clien_length;
+  int server_socket;
 
   while( (param = getopt(argc, argv, "hvrwt:f:H:p:") ) != -1)
   {
@@ -74,6 +81,34 @@ int main(int argc, char *argv[])
     showHelp();
     return -1;
   }
+
+  /********************************************************
+
+      Sockets initialization
+
+   ********************************************************/
+  server.sin_family = AF_INET;
+  server.sin_port = htons(server_port);
+  server.sin_addr.s_addr = INADDR_ANY;
+
+  server_socket = socket(PF_INET, SOCK_DGRAM, 0);
+
+  /* We check for socket errors */
+  if( server_socket == -1 ) {
+    printf(SOCKET_CONSTRUCTION_ERR);
+    return -1;
+  }
+
+  bind(server_socket, (struct sockaddr *)&server, sizeof(server));
+
+  client_legth = sizeof(struct sockaddr_in);
+
+  /********************************************************
+
+      Forks to manage queries
+
+   ********************************************************/
+  signal(SIGCHLD, (func)(removeZombieChildProcesses));
 
   return 0;
 }
