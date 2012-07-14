@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
       Forks to manage queries
 
    ********************************************************/
-  signal(SIGCHLD, (func)(removeZombieChildProcesses));
+  signal(SIGCHLD, removeZombieChildProcesses);
 
   return 0;
 }
