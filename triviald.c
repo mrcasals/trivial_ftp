@@ -60,6 +60,9 @@ int main(int argc, char *argv[])
   struct sockaddr_in client;
   socklen_t client_length;
   int server_socket;
+  int recvfrom_size;
+
+  char buffer[SERVER_BUFFER_SIZE];
 
   while( (param = getopt(argc, argv, "hvrwt:f:H:p:") ) != -1)
   {
@@ -118,6 +121,10 @@ int main(int argc, char *argv[])
 
    ********************************************************/
   signal(SIGCHLD, removeZombieChildProcesses);
+
+  while( 1 ){
+    recvfrom_size = recvfrom(server_socket, buffer, SERVER_BUFFER_SIZE, 0, (struct sockaddr *)&client, &client_length);
+  }
 
   return 0;
 }
