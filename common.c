@@ -8,6 +8,13 @@
 
 #include "common.h"
 
+void printError(char *buffer, int size) {
+    tftp_error_hdr error_message;
+    
+    memcpy(&error_message, buffer, size);
+    printf("ERROR %d:\n%s\n", ntohs(error_message.code), error_message.message); 
+}
+
 void sendACK(unsigned short index, struct sockaddr_in destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE], int verbose) {
     tftp_ack_hdr message;
     int size = 0;
@@ -50,7 +57,7 @@ int recieveACK(unsigned short index, struct sockaddr_in *destination_addr, int* 
       }
 
       if (OPCODE(buffer) == RFC1350_OP_ERROR) {
-        //manageError(buffer, recv_size);
+        printError(buffer, recv_size);
         return -1;
 
       } else if (OPCODE(buffer) == RFC1350_OP_ACK) {
