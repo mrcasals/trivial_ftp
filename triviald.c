@@ -62,7 +62,10 @@ int main(int argc, char *argv[])
   int server_socket;
   int recvfrom_size;
 
+  /* -------- TFTP --------*/
   char buffer[SERVER_BUFFER_SIZE];
+  pid_t child_process;
+  FILE *file;
 
   while( (param = getopt(argc, argv, "hvrwt:f:H:p:") ) != -1)
   {
@@ -124,6 +127,90 @@ int main(int argc, char *argv[])
 
   while( 1 ){
     recvfrom_size = recvfrom(server_socket, buffer, SERVER_BUFFER_SIZE, 0, (struct sockaddr *)&client, &client_length);
+
+    // Log info if verbose
+
+    child_process = fork();
+
+    if( child_process == 0 ){
+      /* Child process was created and is currently running */
+
+      /* -------- Variables --------*/
+      int client_socket;
+      struct sockaddr_in socket_addr;
+      tftp_rwq_hdr message;
+
+      socket_addr.sin_family = AF_INET;
+      socket_addr.sin_port = htons(0);
+      socket_addr.sin_addr.s_addr = INADDR_ANY;
+
+      client_socket = socket(PF_INET, SOCK_DGRAM, 0);
+
+      /* We check for socket errors */
+      if ( client_socket == -1 ) {
+        printf(SOCKET_CONSTRUCTION_ERR);
+        return -1;
+      }
+
+      bind(client_socket, (struct sockaddr *)&socket_addr, sizeof(socket_addr));
+
+      /* We get the filename and mode from the client */
+      bzero(message.filename, MAXPATH_STRLEN);
+      bzero(message.mode, MAXMODE_STRLEN);
+
+      char* tmp_filename = (char*)(buffer + 2);
+      char* tmp_mode = (char*)(buffer + strlen(tmp_filename) + 3);
+
+      memcpy(message.filename, tmp_filename, strlen(tmp_filename));
+      memcpy(message.mode, tmp_mode, strlen(tmp_mode));
+
+      /* Switch actions depending on the mode asked by the client */
+      switch( OPCODE(buffer) ) {
+      case RFC1350_OP_RRQ:
+        /* The client wants to read from the server */
+
+        file = fopen(message.filename, "rb");
+
+        if( file == NULL ) {
+          /* Tell the client the file does not exist */
+        }
+
+        //send the file data to the client
+        fclose(file);
+
+        break;
+
+      case RFC1350_OP_WRQ:
+        /* The client wants to write to the server */
+
+        file = fopen(message.filename, "rb");
+
+        if( file == NULL ){
+          /* The file does not exist, so we can create it and write on it */
+          file = fopen(message.filename, "wb");
+
+          if( file == NULL ) {
+            /* There has been some problems opening the file */
+          }
+
+          //sendACK
+          //write client data to the file
+
+        } else {
+          /* Tell the client to file could not be created */
+        }
+
+        //write the client data to the file
+
+        fclose(file);
+
+        break;
+      }
+
+      close(client_socket);
+
+      exit(0);
+    }
   }
 
   return 0;
