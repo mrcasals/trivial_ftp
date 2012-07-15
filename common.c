@@ -58,15 +58,19 @@ int recieveACK(unsigned short index, struct sockaddr_in *destination_addr, int* 
 
       if (OPCODE(buffer) == RFC1350_OP_ERROR) {
         printError(buffer, recv_size);
+        /* We recieved an error message */
         return -1;
 
       } else if (OPCODE(buffer) == RFC1350_OP_ACK) {
         tftp_ack_hdr message_ack;
         memcpy(&message_ack, buffer, recv_size);
         if (ntohs(message_ack.num_block) == index) {
+          /* Excpected ACK recieved. Send next data package */
           return 1;
         }
       }
     }
+
+    /* ACK or message was unexpected. Package must be resent */
     return 0;
 }
