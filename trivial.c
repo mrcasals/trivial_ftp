@@ -228,7 +228,7 @@ int main(int argc, char *argv[])
 
     query.opcode = RFC1350_OP_RRQ;
 
-    //sendQuery(query, &client_socket, server);
+    sendQuery(query, &client_socket, server, verbose);
     //get the data and put it in the file
     //YAY! DONE
     break;
@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
 
     query.opcode = RFC1350_OP_WRQ;
 
-    //sendQuery(query, &client_socket, server);
+    sendQuery(query, &client_socket, server, verbose);
     //get the ACK from the server
     //YAY! DONE
     break;
