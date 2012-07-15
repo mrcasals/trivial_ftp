@@ -77,10 +77,10 @@ int recieveACK(unsigned short index, struct sockaddr_in *destination_addr, int* 
 
 void sendData(char data[RFC1350_BLOCKSIZE], int size, unsigned short index, struct sockaddr_in destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE], int verbose) {
 
-    tftp_ack_hdr message;
+    tftp_data_hdr message;
     socklen_t destination_addr_len = sizeof(struct sockaddr_in);
 
-    memcpy(message.data, dades, size);
+    memcpy(message.data, data, size);
 
     message.opcode = htons(RFC1350_OP_DATA);
     size += sizeof(message.opcode);
@@ -124,13 +124,13 @@ int recieveData(unsigned short index, char data[RFC1350_BLOCKSIZE], struct socka
         return -1;
 
       } else if (OPCODE(buffer) == RFC1350_OP_DATA) {
-        tftp_ack_hdr message_ack;
+        tftp_data_hdr message_data;
 
-        memcpy(&message_ack, buffer, recv_size);
+        memcpy(&message_data, buffer, recv_size);
 
-        if (ntohs(message_ack.num_block) == index) {
+        if (ntohs(message_data.num_block) == index) {
           /* Expected DATA recieved. */
-          memcpy(data, message.data, recv_size - 4);
+          memcpy(data, message_data.data, recv_size - 4);
 
           return recv_size;
         }
