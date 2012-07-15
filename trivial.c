@@ -64,6 +64,9 @@ int main(int argc, char *argv[])
   struct hostent *server_host;
   int client_socket;
 
+  /* -------- FTP --------*/
+  tftp_rwq_hdr query;
+  FILE *file;
 
   while( (param = getopt(argc, argv, "hvrwt:f:H:p:") ) != -1)
   {
@@ -174,6 +177,59 @@ int main(int argc, char *argv[])
   server_host = gethostbyname(server_host_name);
 
   memcpy( (char *)&server.sin_addr, (char *)server_host->h_addr, server_host->h_length);
+
+  /********************************************************
+
+      Set the packages and send them
+
+   ********************************************************/
+  strcpy(query.filename, target_file);
+  strcpy(query.mode, "octet");
+
+  /* Switch actions depending on the mode given by the user */
+  switch( mode ) {
+  case RFC1350_OP_RRQ:
+    /* The user wants to read from the server */
+    /* Client sends and ACK, server sends data */
+
+    file = fopen(target_file, "wb");
+
+    if( file == NULL ) {
+      /* File could not be created, so exit the program */
+      printf(COULD_NOT_CREATE_FILE_ERR);
+      fflush(stdout);
+      return -1;
+    }
+
+    query.opcode = RFC1350_OP_RRQ;
+
+    //sendQuery(query, &client_socket, server);
+    //get the data and put it in the file
+    //YAY! DONE
+    break;
+
+  case RFC1350_OP_WRQ:
+    /* The user wants to write to the server */
+    /* Client sends data, server sends and ACK */
+
+    file = fopen(target_file, "rb");
+
+    if( file == NULL ) {
+      /* File does not exist */
+      printf(FILE_DOES_NOT_EXIST_ERR);
+      fflush(stdout);
+      return -1;
+    }
+
+    query.opcode = RFC1350_OP_WRQ;
+
+    //sendQuery(query, &client_socket, server);
+    //get the ACK from the server
+    //YAY! DONE
+    break;
+  }
+
+  close(client_socket);
 
   return 0;
 }

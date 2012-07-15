@@ -59,6 +59,8 @@
 #define RFC1350_BLOCKSIZE  512  /* Max. data block size */
 
 /* ---------------- ERRORS ------------------- */
+#define COULD_NOT_CREATE_FILE_ERR "File could not be created.\n"
+#define FILE_DOES_NOT_EXIST_ERR "File does not exist.\n"
 #define NO_FILE_SET_ERR "No file name has been set.\n"
 #define NO_HOST_SET_ERR "No host has been set.\n"
 #define NO_MODE_SET_ERR "No mode has been set.\n"
