@@ -65,7 +65,7 @@ int recieveACK(unsigned short index, struct sockaddr_in *destination_addr, int* 
         tftp_ack_hdr message_ack;
         memcpy(&message_ack, buffer, recv_size);
         if (ntohs(message_ack.num_block) == index) {
-          /* Excpected ACK recieved. Send next data package */
+          /* Expected ACK recieved. Send next data package */
           return 1;
         }
       }
