@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
       Forks to manage queries
 
    ********************************************************/
-  signal(SIGCHLD, removeZombieChildProcesses);
+  signal(SIGCHLD, (func)(removeZombieChildProcesses));
 
   while( 1 ){
     recvfrom_size = recvfrom(server_socket, buffer, SERVER_BUFFER_SIZE, 0, (struct sockaddr *)&client, &client_length);

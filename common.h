@@ -73,6 +73,7 @@
 
 #define u_int16_t unsigned short
 #define OPCODE(addr) (ntohs(* ((u_int16_t *) addr)))
+#define st_u_int16(sval, addr) (*((u_int16_t *)(addr))=htons(sval))
 
 /* ------------------------------------------------------------------------- */
 
@@ -159,3 +160,5 @@ typedef struct {
 #endif
 
 /* ------------------------------------------------------------------------- */
+
+typedef void (*func)(int);

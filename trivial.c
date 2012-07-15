@@ -30,6 +30,31 @@ int showHelp() {
   return 1;
 }
 
+void sendQuery(tftp_rwq_hdr query, int *socket_origin, struct sockaddr_in server, int verbose) {
+
+  /* -------- Variables --------*/
+  socklen_t server_length = sizeof(struct sockaddr_in);
+  int query_size = 0;
+  char buffer[516];
+
+  bzero(buffer, 516);
+
+  st_u_int16(query.opcode, buffer);
+  query_size += sizeof(u_int16_t);
+
+  strcpy(buffer + query_size, query.filename);
+  query_size += (int) strlen(query.filename) + 1;
+
+  strcpy(buffer + query_size, query.mode);
+  query_size += (int) strlen(query.mode) + 1;
+
+  sendto(*socket_origin, buffer, query_size, 0, (struct sockaddr *)&server, server_length);
+
+  if( verbose == 1 ) {
+    //log_info
+  }
+}
+
 int main(int argc, char *argv[])
 {
   /********************************************************
