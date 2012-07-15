@@ -70,6 +70,7 @@
 /* ---------------- OTHERS ------------------- */
 #define CHLD_DELETED "Child %d was deleted.\n"
 #define SERVER_BUFFER_SIZE 1536
+#define LOG_INFO_SUBJECT_SIZE 3
 
 #define u_int16_t unsigned short
 #define OPCODE(addr) (ntohs(* ((u_int16_t *) addr)))
