@@ -234,9 +234,13 @@ int sendData(FILE *file, struct sockaddr_in *reciever, int *sender_socket, char 
 int recieveData(FILE *file, struct sockaddr_in *sender, int *reciever_socket, char verbose_text[LOG_INFO_SUBJECT_SIZE]) {
 
   int next_package = RFC1350_BLOCKSIZE + 4;
+  int timeout = 5;
+  char data[RFC1350_BLOCKSIZE];
+  int bytes;
+  unsigned short index = 1;
 
   /* While this package is not the last one */
-  while( next_package == RFC1350_BLOCK_SIZE + 4 ) {
+  while( next_package == RFC1350_BLOCKSIZE + 4 ) {
     if(timeout < 0) 
       return -1;
 
