@@ -59,13 +59,21 @@
 #define RFC1350_BLOCKSIZE  512  /* Max. data block size */
 
 /* ---------------- ERRORS ------------------- */
+#define ACCESS_VIOLATION_ERR "Access violation error.\n"
 #define COULD_NOT_CREATE_FILE_ERR "File could not be created.\n"
+#define DISK_FULL_ERR "Disk full, file can't be created.\n"
+#define FILE_ALREADY_EXISTS_ERR "File already exists.\n"
 #define FILE_DOES_NOT_EXIST_ERR "File does not exist.\n"
+#define FILE_NOT_FOUND_ERR "File not found.\n"
+#define ILLEGAL_OP_ERR "Illegal operation.\n"
 #define NO_FILE_SET_ERR "No file name has been set.\n"
 #define NO_HOST_SET_ERR "No host has been set.\n"
 #define NO_MODE_SET_ERR "No mode has been set.\n"
+#define NO_SUCH_USER_ERR "No such user.\n"
 #define SOCKET_CONSTRUCTION_ERR "There has been an error constructing the socket.\n"
 #define TWO_MODES_SET_ERR "Two modes have been set. Please, set only one mode.\n"
+#define UNKNOWN_ERR "Unknown error.\n"
+#define UNKNOWN_TRANSFER_ID_ERR "Unknown transfer ID.\n"
 
 /* ---------------- OTHERS ------------------- */
 #define CHLD_DELETED "Child %d was deleted.\n"
