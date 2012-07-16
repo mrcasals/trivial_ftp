@@ -108,13 +108,13 @@ int main(int argc, char *argv[])
 
   server_socket = socket(PF_INET, SOCK_DGRAM, 0);
 
+  bind(server_socket, (struct sockaddr *)&server, sizeof(server));
+
   /* We check for socket errors */
   if( server_socket == -1 ) {
     printf(SOCKET_CONSTRUCTION_ERR);
     return -1;
   }
-
-  bind(server_socket, (struct sockaddr *)&server, sizeof(server));
 
   client_length = sizeof(struct sockaddr_in);
 
@@ -148,13 +148,13 @@ int main(int argc, char *argv[])
 
       client_socket = socket(PF_INET, SOCK_DGRAM, 0);
 
+      bind(client_socket, (struct sockaddr *)&socket_addr, sizeof(socket_addr));
+
       /* We check for socket errors */
       if ( client_socket == -1 ) {
         printf(SOCKET_CONSTRUCTION_ERR);
         return -1;
       }
-
-      bind(client_socket, (struct sockaddr *)&socket_addr, sizeof(socket_addr));
 
       /* We get the filename and mode from the client */
       bzero(message.filename, MAXPATH_STRLEN);
