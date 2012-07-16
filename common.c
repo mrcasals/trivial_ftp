@@ -93,7 +93,7 @@ void sendError(unsigned short error_code, struct sockaddr_in destination_address
     strcpy(error_message.message, DISK_FULL_ERR);
     break;
 
-  case RFC1350_ERR_ILEGALOP:
+  case RFC1350_ERR_ILLEGALOP:
     strcpy(error_message.message, ILLEGAL_OP_ERR);
     break;
 

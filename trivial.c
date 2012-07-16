@@ -89,6 +89,7 @@ int main(int argc, char *argv[])
   int client_socket;
 
   /* -------- FTP --------*/
+  int final;
   tftp_rwq_hdr query;
   FILE *file;
 
@@ -228,8 +229,12 @@ int main(int argc, char *argv[])
     query.opcode = RFC1350_OP_RRQ;
 
     sendQuery(query, &client_socket, server);
-    //get the data and put it in the file
-    //YAY! DONE
+    final = recieveData(file, &server, &client_socket, VERBOSE_SUBJECT_CLIENT);
+
+    if (final == 0) {
+        printf("File transfer was successful!!\n");
+        fflush(stdout); 
+    }
     break;
 
   case RFC1350_OP_WRQ:
@@ -248,8 +253,18 @@ int main(int argc, char *argv[])
     query.opcode = RFC1350_OP_WRQ;
 
     sendQuery(query, &client_socket, server);
-    //get the ACK from the server
-    //YAY! DONE
+
+    final = recieveACK(0, &server, &client_socket, VERBOSE_SUBJECT_CLIENT);
+
+    if( final ==1 ){
+      final = recieveData(file, &server, &client_socket, VERBOSE_SUBJECT_CLIENT);
+
+      if( final == 1 ){
+        printf("File transfer was successful!!\n");
+        fflush(stdout); 
+      }
+    }
+
     break;
   }
 

@@ -62,6 +62,7 @@ int main(int argc, char *argv[])
   int recvfrom_size;
 
   /* -------- TFTP --------*/
+  int final = -1;
   char buffer[SERVER_BUFFER_SIZE];
   pid_t child_process;
   FILE *file;
@@ -127,7 +128,6 @@ int main(int argc, char *argv[])
   while( 1 ){
     recvfrom_size = recvfrom(server_socket, buffer, SERVER_BUFFER_SIZE, 0, (struct sockaddr *)&client, &client_length);
 
-    // Log info if verbose
     if(verbose == 1) {
       log_info(&buffer, recvfrom_size, VERBOSE_SUBJECT_SERVER, VERBOSE_ACTION_RECIEVE);
     }
@@ -175,9 +175,12 @@ int main(int argc, char *argv[])
 
         if( file == NULL ) {
           /* Tell the client the file does not exist */
+
+          sendError(RFC1350_ERR_FNOTFOUND, client, &client_socket, VERBOSE_SUBJECT_SERVER);
         }
 
-        //send the file data to the client
+        final = sendData(file, &client, &client_socket, VERBOSE_SUBJECT_SERVER);
+
         fclose(file);
 
         break;
@@ -193,23 +196,33 @@ int main(int argc, char *argv[])
 
           if( file == NULL ) {
             /* There has been some problems opening the file */
+            printf("File could not be opened");
+            fflush(stdout);
+            return -1;
           }
 
-          //sendACK
-          //write client data to the file
+          sendACK(0, client, &client_socket, VERBOSE_SUBJECT_SERVER);
+          final = recieveData(file, &client, &client_socket, VERBOSE_SUBJECT_SERVER);
 
         } else {
           /* Tell the client to file could not be created */
+          sendError(RFC1350_ERR_FEXISTS, client, &client_socket, VERBOSE_SUBJECT_SERVER);
         }
-
-        //write the client data to the file
 
         fclose(file);
 
         break;
+
+      default:
+        sendError(RFC1350_ERR_ILLEGALOP, client, &client_socket, VERBOSE_SUBJECT_SERVER);
       }
 
       close(client_socket);
+
+      if (final == 0) {
+        printf("File %s was successfully transfered!\n", message.filename);
+        fflush(stdout); 
+      }
 
       exit(0);
     }
