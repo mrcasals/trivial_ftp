@@ -17,58 +17,58 @@ void printError(char *buffer, int size) {
 
 void sendError(unsigned short error_code, struct sockaddr_in destination_address, int *sock, char verbose_text[LOG_INFO_SUBJECT_SIZE], int verbose) {
 
-    tftp_error_hdr error_message;
-    int error_size = 0;
-    socklen_t destination_address_len = sizeof(struct sockaddr_in);
+  tftp_error_hdr error_message;
+  int error_size = 0;
+  socklen_t destination_address_len = sizeof(struct sockaddr_in);
 
-    /* Error message header set up */
-    error_message.opcode = htons(RFC1350_OP_ERROR);
-    error_size += 2;
-    error_message.code = htons(error_code);
-    error_size += 2;
+  /* Error message header set up */
+  error_message.opcode = htons(RFC1350_OP_ERROR);
+  error_size += 2;
+  error_message.code = htons(error_code);
+  error_size += 2;
 
-    /* Error message body set up */
-    switch (error_code) {
-    case RFC1350_ERR_NOTDEF:
-      strcpy(error_message.message, UNKNOWN_ERR);
-      break;
+  /* Error message body set up */
+  switch (error_code) {
+  case RFC1350_ERR_NOTDEF:
+    strcpy(error_message.message, UNKNOWN_ERR);
+    break;
 
-    case RFC1350_ERR_FNOTFOUND:
-      strcpy(error_message.message, FILE_NOT_FOUND_ERR); 
-      break;
+  case RFC1350_ERR_FNOTFOUND:
+    strcpy(error_message.message, FILE_NOT_FOUND_ERR); 
+    break;
 
-    case RFC1350_ERR_ACCESS:
-      strcpy(error_message.message, ACCESS_VIOLATION_ERR);
-      break;
+  case RFC1350_ERR_ACCESS:
+    strcpy(error_message.message, ACCESS_VIOLATION_ERR);
+    break;
 
-    case RFC1350_ERR_DISKFULL:
-      strcpy(error_message.message, DISK_FULL_ERR);
-      break;
+  case RFC1350_ERR_DISKFULL:
+    strcpy(error_message.message, DISK_FULL_ERR);
+    break;
 
-    case RFC1350_ERR_ILEGALOP:
-      strcpy(error_message.message, ILLEGAL_OP_ERR);
-      break;
+  case RFC1350_ERR_ILEGALOP:
+    strcpy(error_message.message, ILLEGAL_OP_ERR);
+    break;
 
-    case RFC1350_ERR_UKNOWID:
-      strcpy(error_message.message, UNKNOWN_TRANSFER_ID_ERR);
-      break;
+  case RFC1350_ERR_UKNOWID:
+    strcpy(error_message.message, UNKNOWN_TRANSFER_ID_ERR);
+    break;
 
-    case RFC1350_ERR_FEXISTS:
-      strcpy(error_message.message, FILE_ALREADY_EXISTS_ERR);
-      break;
+  case RFC1350_ERR_FEXISTS:
+    strcpy(error_message.message, FILE_ALREADY_EXISTS_ERR);
+    break;
 
-    case RFC1350_ERR_NOUSER:
-      strcpy(error_message.message, NO_SUCH_USER_ERR);
-      break;
-    }
+  case RFC1350_ERR_NOUSER:
+    strcpy(error_message.message, NO_SUCH_USER_ERR);
+    break;
+  }
 
-    error_size += (int) strlen(error_message.message) + 1;
+  error_size += (int) strlen(error_message.message) + 1;
 
-    sendto(*sock, (char*)&error_message, error_size, 0, (struct sockaddr*)&destination_address, destination_address_len);
+  sendto(*sock, (char*)&error_message, error_size, 0, (struct sockaddr*)&destination_address, destination_address_len);
 
-    if (verbose == 1) {
-      //log_info
-    }
+  if (verbose == 1) {
+    //log_info
+  }
 }
 
 
