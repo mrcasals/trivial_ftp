@@ -133,7 +133,7 @@ void sendACK(unsigned short index, struct sockaddr_in destination_addr, int* soc
 
   sendto(*sock, (char *)&message, size, 0, (struct sockaddr*)&destination_addr, destination_addr_len);
   if (verbose == 1) {
-    // log_info
+    log_info(&message, size, verbose_text, VERBOSE_ACTION_SEND);
   }
 }
 
@@ -158,7 +158,7 @@ int recieveACK(unsigned short index, struct sockaddr_in *destination_addr, int* 
     recv_size = recvfrom(*sock, buffer, 516, 0, (struct sockaddr*)destination_addr, &destination_addr_len);
 
     if( verbose == 1 ) {
-      //log_info
+    log_info(&buffer, recv_size, verbose_text, VERBOSE_ACTION_RECIEVE);
     }
 
     if (OPCODE(buffer) == RFC1350_OP_ERROR) {
@@ -195,7 +195,7 @@ void sendDataPackage(char data[RFC1350_BLOCKSIZE], int size, unsigned short inde
 
   sendto(*sock, (char *)&message, size, 0, (struct sockaddr*)&destination_addr, destination_addr_len);
   if (verbose == 1) {
-    // log_info
+    log_info(&message, size, verbose_text, VERBOSE_ACTION_SEND);
   }
 }
 
@@ -220,7 +220,7 @@ int recieveDataPackage(unsigned short index, char data[RFC1350_BLOCKSIZE], struc
     recv_size = recvfrom(*sock, buffer, 516, 0, (struct sockaddr*)destination_addr, &destination_addr_len);
 
     if( verbose == 1 ) {
-      //log_info
+      log_info(&buffer, recv_size, verbose_text, VERBOSE_ACTION_RECIEVE);
     }
 
     if (OPCODE(buffer) == RFC1350_OP_DATA) {
