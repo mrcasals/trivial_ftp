@@ -51,7 +51,6 @@ int main(int argc, char *argv[])
 
   /* -------- Params --------*/
   int param;
-  int verbose = 0;
   int show_help = 0;
   int server_port = RFC1350_PORT;
 

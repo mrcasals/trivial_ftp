@@ -171,3 +171,6 @@ typedef struct {
 /* ------------------------------------------------------------------------- */
 
 typedef void (*func)(int);
+
+int rexmt;
+int verbose;

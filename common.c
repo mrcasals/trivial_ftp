@@ -15,7 +15,7 @@ void printError(char *buffer, int size) {
   printf("ERROR %d:\n%s\n", ntohs(error_message.code), error_message.message); 
 }
 
-void sendError(unsigned short error_code, struct sockaddr_in destination_address, int *sock, char verbose_text[LOG_INFO_SUBJECT_SIZE], int verbose) {
+void sendError(unsigned short error_code, struct sockaddr_in destination_address, int *sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]) {
 
   tftp_error_hdr error_message;
   int error_size = 0;
@@ -72,7 +72,7 @@ void sendError(unsigned short error_code, struct sockaddr_in destination_address
 }
 
 
-void sendACK(unsigned short index, struct sockaddr_in destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE], int verbose) {
+void sendACK(unsigned short index, struct sockaddr_in destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]) {
   tftp_ack_hdr message;
   int size = 0;
   socklen_t destination_addr_len = sizeof(struct sockaddr_in);
@@ -89,7 +89,7 @@ void sendACK(unsigned short index, struct sockaddr_in destination_addr, int* soc
   }
 }
 
-int recieveACK(unsigned short index, struct sockaddr_in *destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE], int verbose, int rexmt) {
+int recieveACK(unsigned short index, struct sockaddr_in *destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]) {
 
   char buffer[516];
   int recv_size;
@@ -109,7 +109,7 @@ int recieveACK(unsigned short index, struct sockaddr_in *destination_addr, int* 
   if (result == 1) {
     recv_size = recvfrom(*sock, buffer, 516, 0, (struct sockaddr*)destination_addr, &destination_addr_len);
 
-    if( verbose ) {
+    if( verbose == 1 ) {
       //log_info
     }
 
@@ -132,7 +132,7 @@ int recieveACK(unsigned short index, struct sockaddr_in *destination_addr, int* 
   return 0;
 }
 
-void sendData(char data[RFC1350_BLOCKSIZE], int size, unsigned short index, struct sockaddr_in destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE], int verbose) {
+void sendDataPackage(char data[RFC1350_BLOCKSIZE], int size, unsigned short index, struct sockaddr_in destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]) {
 
   tftp_data_hdr message;
   socklen_t destination_addr_len = sizeof(struct sockaddr_in);
@@ -151,7 +151,7 @@ void sendData(char data[RFC1350_BLOCKSIZE], int size, unsigned short index, stru
   }
 }
 
-int recieveData(unsigned short index, char data[RFC1350_BLOCKSIZE], struct sockaddr_in *destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE], int verbose, int rexmt) {
+int recieveData(unsigned short index, char data[RFC1350_BLOCKSIZE], struct sockaddr_in *destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]) {
 
   char buffer[516];
   int recv_size;
@@ -171,7 +171,7 @@ int recieveData(unsigned short index, char data[RFC1350_BLOCKSIZE], struct socka
   if (result == 1) {
     recv_size = recvfrom(*sock, buffer, 516, 0, (struct sockaddr*)destination_addr, &destination_addr_len);
 
-    if( verbose ) {
+    if( verbose == 1 ) {
       //log_info
     }
 
@@ -194,5 +194,37 @@ int recieveData(unsigned short index, char data[RFC1350_BLOCKSIZE], struct socka
   }
 
   /* DATA or message was unexpected. */
+  return 0;
+}
+
+int sendData(FILE *file, struct sockaddr_in *reciever, int *sender_socket, char verbose_text[LOG_INFO_SUBJECT_SIZE]) {
+
+  int bytes = RFC1350_BLOCKSIZE;
+  char data[RFC1350_BLOCKSIZE];
+  int next_package = 1;
+  unsigned short index = 0;
+  int timeout = 5;
+
+  /* While this package is not the last one */
+  while( bytes == RFC1350_BLOCKSIZE ){
+
+    if( next_package == 1 ) {
+      timeout = 5;
+      bytes = fread(data, sizeof(char), RFC1350_BLOCKSIZE, file);
+      index++;
+      sendDataPackage(data, bytes, index, *reciever, sender_socket, verbose_text);
+
+    } else if( next_package == 0 ) {
+      sendDataPackage(data, bytes, index, *reciever, sender_socket, verbose_text);
+      timeout -= 1;
+
+    } else {
+      /* We got an error message */
+      return -1;
+    }
+
+    next_package = recieveACK(index, reciever, sender_socket, verbose_text);
+  }
+
   return 0;
 }

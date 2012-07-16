@@ -30,7 +30,7 @@ int showHelp() {
   return 1;
 }
 
-void sendQuery(tftp_rwq_hdr query, int *socket_origin, struct sockaddr_in server, int verbose) {
+void sendQuery(tftp_rwq_hdr query, int *socket_origin, struct sockaddr_in server) {
 
   /* -------- Variables --------*/
   socklen_t server_length = sizeof(struct sockaddr_in);
@@ -77,7 +77,6 @@ int main(int argc, char *argv[])
 
   /* --------- Params --------*/
   int param;
-  int verbose = 0;
   int show_help = 0;
   int server_port = RFC1350_PORT;
   int mode = 0;
@@ -228,7 +227,7 @@ int main(int argc, char *argv[])
 
     query.opcode = RFC1350_OP_RRQ;
 
-    sendQuery(query, &client_socket, server, verbose);
+    sendQuery(query, &client_socket, server);
     //get the data and put it in the file
     //YAY! DONE
     break;
@@ -248,7 +247,7 @@ int main(int argc, char *argv[])
 
     query.opcode = RFC1350_OP_WRQ;
 
-    sendQuery(query, &client_socket, server, verbose);
+    sendQuery(query, &client_socket, server);
     //get the ACK from the server
     //YAY! DONE
     break;
