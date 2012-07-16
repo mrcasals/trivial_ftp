@@ -84,7 +84,7 @@ void sendACK(unsigned short index, struct sockaddr_in destination_addr, int* soc
   size += sizeof(message.num_block);
 
   sendto(*sock, (char *)&message, size, 0, (struct sockaddr*)&destination_addr, destination_addr_len);
-  if (verbose) {
+  if (verbose == 1) {
     // log_info
   }
 }
@@ -146,7 +146,7 @@ void sendData(char data[RFC1350_BLOCKSIZE], int size, unsigned short index, stru
   size += sizeof(message.num_block);
 
   sendto(*sock, (char *)&message, size, 0, (struct sockaddr*)&destination_addr, destination_addr_len);
-  if (verbose) {
+  if (verbose == 1) {
     // log_info
   }
 }
