@@ -51,7 +51,7 @@ void sendQuery(tftp_rwq_hdr query, int *socket_origin, struct sockaddr_in server
   sendto(*socket_origin, buffer, query_size, 0, (struct sockaddr *)&server, server_length);
 
   if( verbose == 1 ) {
-    //log_info
+    log_info(buffer, query_size, VERBOSE_SUBJECT_CLIENT, VERBOSE_ACTION_SEND);
   }
 }
 

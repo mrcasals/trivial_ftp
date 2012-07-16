@@ -78,6 +78,8 @@
 /* ---------------- VERBOSE ------------------- */
 #define VERBOSE_ACTION_SEND "E"
 #define VERBOSE_ACTION_RECIEVE "R"
+#define VERBOSE_SUBJECT_CLIENT "C:"
+#define VERBOSE_SUBJECT_SERVER "S:"
 #define VERBOSE_RRQ   "%s %s RRQ   [%s]\n"        //RRQ  [filename]
 #define VERBOSE_WRQ   "%s %s WRQ   [%s]\n"        //WRQ [filename]
 #define VERBOSE_DATA  "%s %s DATA  [%d#] [%d]\n"  //DATA [Blocki#] [size]
@@ -185,3 +187,14 @@ typedef void (*func)(int);
 
 int rexmt;
 int verbose;
+
+
+void printError(char *buffer, int size);
+void log_info(void *message, int size, char verbose_subject[LOG_INFO_SUBJECT_SIZE], char verbose_text[LOG_INFO_WHAT_SIZE]);
+void sendError(unsigned short error_code, struct sockaddr_in destination_address, int *sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]);
+void sendACK(unsigned short index, struct sockaddr_in destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]);
+int recieveACK(unsigned short index, struct sockaddr_in *destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]);
+void sendDataPackage(char data[RFC1350_BLOCKSIZE], int size, unsigned short index, struct sockaddr_in destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]);
+int recieveDataPackage(unsigned short index, char data[RFC1350_BLOCKSIZE], struct sockaddr_in *destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]);
+int sendData(FILE *file, struct sockaddr_in *reciever, int *sender_socket, char verbose_text[LOG_INFO_SUBJECT_SIZE]);
+int recieveData(FILE *file, struct sockaddr_in *sender, int *reciever_socket, char verbose_text[LOG_INFO_SUBJECT_SIZE]);

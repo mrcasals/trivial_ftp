@@ -128,6 +128,9 @@ int main(int argc, char *argv[])
     recvfrom_size = recvfrom(server_socket, buffer, SERVER_BUFFER_SIZE, 0, (struct sockaddr *)&client, &client_length);
 
     // Log info if verbose
+    if(verbose == 1) {
+      log_info(&buffer, recvfrom_size, VERBOSE_SUBJECT_SERVER, VERBOSE_ACTION_RECIEVE);
+    }
 
     child_process = fork();
 
