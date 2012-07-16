@@ -151,7 +151,7 @@ void sendDataPackage(char data[RFC1350_BLOCKSIZE], int size, unsigned short inde
   }
 }
 
-int recieveData(unsigned short index, char data[RFC1350_BLOCKSIZE], struct sockaddr_in *destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]) {
+int recieveDataPackage(unsigned short index, char data[RFC1350_BLOCKSIZE], struct sockaddr_in *destination_addr, int* sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]) {
 
   char buffer[516];
   int recv_size;
@@ -207,6 +207,8 @@ int sendData(FILE *file, struct sockaddr_in *reciever, int *sender_socket, char 
 
   /* While this package is not the last one */
   while( bytes == RFC1350_BLOCKSIZE ){
+    if(timeout < 0) 
+      return -1;
 
     if( next_package == 1 ) {
       timeout = 5;
@@ -224,6 +226,41 @@ int sendData(FILE *file, struct sockaddr_in *reciever, int *sender_socket, char 
     }
 
     next_package = recieveACK(index, reciever, sender_socket, verbose_text);
+  }
+
+  return 0;
+}
+
+int recieveData(FILE *file, struct sockaddr_in *sender, int *reciever_socket, char verbose_text[LOG_INFO_SUBJECT_SIZE]) {
+
+  int next_package = RFC1350_BLOCKSIZE + 4;
+
+  /* While this package is not the last one */
+  while( next_package == RFC1350_BLOCK_SIZE + 4 ) {
+    if(timeout < 0) 
+      return -1;
+
+    next_package = recieveDataPackage(index, data, sender, reciever_socket, verbose_text);
+
+    if( next_package > 4 ) {
+      timeout = 5;
+      bytes = fwrite(data, sizeof(char), next_package - 4, file);
+
+      if( bytes < 0 ) {
+        sendError(RFC1350_ERR_DISKFULL, *sender, reciever_socket, verbose_text);
+        return -1;
+      }
+
+      sendACK(index, *sender, reciever_socket, verbose_text);
+      index++;
+
+    } else if( next_package == -1 ) {
+      return -1;
+
+    } else {
+      timeout -= 1;
+      sendACK(index, *sender, reciever_socket, verbose_text);
+    }
   }
 
   return 0;
