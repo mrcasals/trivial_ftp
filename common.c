@@ -15,6 +15,54 @@ void printError(char *buffer, int size) {
   printf("ERROR %d:\n%s\n", ntohs(error_message.code), error_message.message); 
 }
 
+void log_info(void *message, int size, char verbose_subject[LOG_INFO_SUBJECT_SIZE], char verbose_text[LOG_INFO_WHAT_SIZE]) {
+
+  switch( OPCODE((char *)message )) {
+
+  case RFC1350_OP_RRQ:
+    printf(VERBOSE_RRQ, verbose_subject, verbose_text, (char *)(message + 2));
+    fflush(stdout);
+    break;
+
+  case RFC1350_OP_WRQ:
+    printf(VERBOSE_WRQ, verbose_subject, verbose_text, (char *)(message + 2));
+    fflush(stdout);
+    break;
+
+  case RFC1350_OP_DATA:
+    {
+      tftp_data_hdr message_data;
+
+      memcpy(&message_data, message, size);
+
+      printf(VERBOSE_DATA, verbose_subject, verbose_text, ntohs(message_data.num_block), size - 4);
+      fflush(stdout);
+    }
+    break;
+
+  case RFC1350_OP_ACK:
+    {
+      tftp_ack_hdr message_ack;
+
+      memcpy(&message_ack, message, size);
+
+      printf(VERBOSE_ACK, verbose_subject, verbose_text, ntohs(message_ack.num_block));
+      fflush(stdout);
+    }
+    break;
+
+  case RFC1350_OP_ERROR:
+    printf(VERBOSE_ERROR, verbose_subject, verbose_text, (char *)(message + 4));
+    fflush(stdout);
+    break;
+
+  default:
+    printf(VERBOSE_OTHER, verbose_subject, verbose_text);
+    fflush(stdout);
+    break;
+  }
+}
+
 void sendError(unsigned short error_code, struct sockaddr_in destination_address, int *sock, char verbose_text[LOG_INFO_SUBJECT_SIZE]) {
 
   tftp_error_hdr error_message;
@@ -67,7 +115,7 @@ void sendError(unsigned short error_code, struct sockaddr_in destination_address
   sendto(*sock, (char*)&error_message, error_size, 0, (struct sockaddr*)&destination_address, destination_address_len);
 
   if (verbose == 1) {
-    //log_info
+    log_info(&error_message, error_size, verbose_text, VERBOSE_ACTION_SEND);
   }
 }
 

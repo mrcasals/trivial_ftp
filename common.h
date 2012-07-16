@@ -75,10 +75,21 @@
 #define UNKNOWN_ERR "Unknown error.\n"
 #define UNKNOWN_TRANSFER_ID_ERR "Unknown transfer ID.\n"
 
+/* ---------------- VERBOSE ------------------- */
+#define VERBOSE_ACTION_SEND "E"
+#define VERBOSE_ACTION_RECIEVE "R"
+#define VERBOSE_RRQ   "%s %s RRQ   [%s]\n"        //RRQ  [filename]
+#define VERBOSE_WRQ   "%s %s WRQ   [%s]\n"        //WRQ [filename]
+#define VERBOSE_DATA  "%s %s DATA  [%d#] [%d]\n"  //DATA [Blocki#] [size]
+#define VERBOSE_ACK   "%s %s ACK   [%d#]\n"       //ACK: ACK [Blocki#]
+#define VERBOSE_ERROR "%s %s ERROR [%s]\n"        //ERROR: ERROR [ErrMsg]
+#define VERBOSE_OTHER "%s %s Unknown message\n"
+
 /* ---------------- OTHERS ------------------- */
 #define CHLD_DELETED "Child %d was deleted.\n"
 #define SERVER_BUFFER_SIZE 1536
 #define LOG_INFO_SUBJECT_SIZE 3
+#define LOG_INFO_WHAT_SIZE 2
 
 #define u_int16_t unsigned short
 #define OPCODE(addr) (ntohs(* ((u_int16_t *) addr)))
