@@ -21,6 +21,7 @@ int showHelp() {
       Optional params:\n\
         -p: server port. If not set, port will be 69\n\
         -v: use verbose mode\n\
+        -t: maximum time in seconds for retransmission\n\
   \n\
       Help:\n\
         -h: shows this info\n\
@@ -69,6 +70,7 @@ int main(int argc, char *argv[])
       Optional params:
         -p: server port. If not set, port will be 69
         -v: use verbose mode
+        -t: maximum time in seconds for retransmission
 
       Help:
         -h: shows this info
@@ -92,6 +94,8 @@ int main(int argc, char *argv[])
   int final;
   tftp_rwq_hdr query;
   FILE *file;
+  
+  retransmission_time = 5; // Default seconds value for retransmission
 
   while( (param = getopt(argc, argv, "hvrwt:f:H:p:") ) != -1)
   {
@@ -133,7 +137,11 @@ int main(int argc, char *argv[])
     case 'v':
       /* User wants verbose mode, so the program 
        * must give feedback to the user */
-      verbose = 1;
+      verbose = 1; 
+      break;
+      
+    case 't':
+      retransmission_time = atoi(optarg);
       break;
 
     case 'h':
@@ -256,8 +264,10 @@ int main(int argc, char *argv[])
 
     final = recieveACK(0, &server, &client_socket, VERBOSE_SUBJECT_CLIENT);
 
+printf("final = %d\n", final); //debug
+
     if( final ==1 ){
-      final = recieveData(file, &server, &client_socket, VERBOSE_SUBJECT_CLIENT);
+      final = sendData(file, &server, &client_socket, VERBOSE_SUBJECT_CLIENT);
 
       if( final == 1 ){
         printf("File transfer was successful!!\n");

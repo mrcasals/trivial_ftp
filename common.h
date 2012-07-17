@@ -82,8 +82,8 @@
 #define VERBOSE_SUBJECT_SERVER "S:"
 #define VERBOSE_RRQ   "%s %s RRQ   [%s]\n"        //RRQ  [filename]
 #define VERBOSE_WRQ   "%s %s WRQ   [%s]\n"        //WRQ [filename]
-#define VERBOSE_DATA  "%s %s DATA  [%d#] [%d]\n"  //DATA [Blocki#] [size]
-#define VERBOSE_ACK   "%s %s ACK   [%d#]\n"       //ACK: ACK [Blocki#]
+#define VERBOSE_DATA  "%s %s DATA  [%d#] [%d]\n"  //DATA [Block #] [size]
+#define VERBOSE_ACK   "%s %s ACK   [%d#]\n"       //ACK: ACK [Block #]
 #define VERBOSE_ERROR "%s %s ERROR [%s]\n"        //ERROR: ERROR [ErrMsg]
 #define VERBOSE_OTHER "%s %s Unknown message\n"
 
@@ -185,9 +185,9 @@ typedef struct {
 
 typedef void (*func)(int);
 
-int rexmt;
+/* -------- Global variables --------*/
+int retransmission_time; // Used on retransmission
 int verbose;
-
 
 void printError(char *buffer, int size);
 void log_info(void *message, int size, char verbose_subject[LOG_INFO_SUBJECT_SIZE], char verbose_text[LOG_INFO_WHAT_SIZE]);

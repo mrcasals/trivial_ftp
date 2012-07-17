@@ -61,6 +61,8 @@ int main(int argc, char *argv[])
   int server_socket;
   int recvfrom_size;
 
+  retransmission_time = 5;
+
   /* -------- TFTP --------*/
   int final = -1;
   char buffer[SERVER_BUFFER_SIZE];
@@ -167,6 +169,7 @@ int main(int argc, char *argv[])
       memcpy(message.mode, tmp_mode, strlen(tmp_mode));
 
       /* Switch actions depending on the mode asked by the client */
+printf("OPCODE: %x\n", OPCODE(buffer)); // debug
       switch( OPCODE(buffer) ) {
       case RFC1350_OP_RRQ:
         /* The client wants to read from the server */

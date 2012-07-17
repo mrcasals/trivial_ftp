@@ -142,6 +142,7 @@ int recieveACK(unsigned short index, struct sockaddr_in *destination_addr, int* 
   char buffer[516];
   int recv_size;
   socklen_t destination_addr_len = sizeof(struct sockaddr_in);
+  int rexmt = retransmission_time;
 
   int result;
   struct timeval t_retx;
@@ -149,11 +150,13 @@ int recieveACK(unsigned short index, struct sockaddr_in *destination_addr, int* 
 
   FD_ZERO ( &fds ) ;
   FD_SET ( *sock, &fds ) ;
-
+  
   t_retx.tv_sec = rexmt;
   t_retx.tv_usec = 0;
 
   result = select ( (*sock) + 1, &fds, NULL, NULL, &t_retx);
+printf("recieveACK: RESULT from SELECT = %x\n", result); //debug
+
   if (result == 1) {
     recv_size = recvfrom(*sock, buffer, 516, 0, (struct sockaddr*)destination_addr, &destination_addr_len);
 
@@ -204,6 +207,7 @@ int recieveDataPackage(unsigned short index, char data[RFC1350_BLOCKSIZE], struc
   char buffer[516];
   int recv_size;
   socklen_t destination_addr_len = sizeof(struct sockaddr_in);
+  int rexmt = retransmission_time;
 
   int result;
   struct timeval t_retx;
@@ -216,12 +220,16 @@ int recieveDataPackage(unsigned short index, char data[RFC1350_BLOCKSIZE], struc
   t_retx.tv_usec = 0;
 
   result = select ( (*sock) + 1, &fds, NULL, NULL, &t_retx);
+printf("recieveDataPackage: RESULT form SELECT = %x\n", result); //debug
+
   if (result == 1) {
     recv_size = recvfrom(*sock, buffer, 516, 0, (struct sockaddr*)destination_addr, &destination_addr_len);
 
     if( verbose == 1 ) {
       log_info(&buffer, recv_size, verbose_text, VERBOSE_ACTION_RECIEVE);
     }
+
+printf("recieveDataPackage: OPCODE = %x\n", OPCODE(buffer)); //debug
 
     if (OPCODE(buffer) == RFC1350_OP_DATA) {
       tftp_data_hdr message_data;
@@ -292,7 +300,9 @@ int recieveData(FILE *file, struct sockaddr_in *sender, int *reciever_socket, ch
     if(timeout < 0) 
       return -1;
 
+printf("Current Package: %d", next_package); //debug
     next_package = recieveDataPackage(index, data, sender, reciever_socket, verbose_text);
+printf("Next Package: %d", next_package); //debug
 
     if( next_package > 4 ) {
       timeout = 5;
